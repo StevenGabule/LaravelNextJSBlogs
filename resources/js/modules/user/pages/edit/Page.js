@@ -28,8 +28,7 @@ class Page extends Component {
         const user = this.props.user.toJson()
 
         this.state = {
-            user,
-            errors: this.validator.errors
+            user
         }
 
         this.handleChange = this.handleChange.bind(this)
@@ -46,16 +45,7 @@ class Page extends Component {
     }
 
     handleChange(name, value) {
-        const { errors } = this.validator
-
         this.setState({ user: { ...this.props.user, [name]: value} })
-
-        errors.remove(name)
-
-        this.validator.validate(name, value)
-            .then(() => {
-                this.setState({ errors })
-            })
     }
 
     handleSubmit(e) {
@@ -63,14 +53,15 @@ class Page extends Component {
         const user = this.state.user
         const { errors } = this.validator
 
-        this.validator.validateAll(user)
+        /*this.validator.validateAll(user)
             .then((success) => {
                 if (success) {
-                    this.submit(user)
+
                 } else {
                     this.setState({ errors })
                 }
-            })
+            })*/
+        this.submit(user)
     }
 
     submit(user) {

@@ -7,12 +7,30 @@ use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
+    public $successStatus = 200;
+
     public function register(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'password_confirmation' => 'required|same:password',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+        $token['token'] = $user->createToken(env('APP_URL'))->accessToken;
+        return response()->json(['success' => ['token' => $token, 'data' => $user]], $this->successStatus);
+
+        /*$this->validate($request, [
             'name' => 'required|min:3',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
@@ -20,12 +38,9 @@ class RegisterController extends Controller
         ], [
             'password.confirmed' => 'The password does not match.'
         ]);
-
         try {
             event(new Registered($this->create($request->all())));
-
             $http = new Client;
-
             $response = $http->post(env('APP_URL') . '/oauth/token', [
                 'form_params' => [
                     'grant_type' => 'password',
@@ -45,13 +60,13 @@ class RegisterController extends Controller
                 "error" => "invalid_credentials",
                 "message" => "The user credentials were incorrect."
             ], 401);
-        }
+        }*/
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array $data
+     * @param array $data
      * @return User
      */
     protected function create(array $data)

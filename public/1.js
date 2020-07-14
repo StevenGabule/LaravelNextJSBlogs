@@ -78,8 +78,7 @@ var Page = /*#__PURE__*/function (_Component) {
     var user = _this.props.user.toJson();
 
     _this.state = {
-      user: user,
-      errors: _this.validator.errors
+      user: user
     };
     _this.handleChange = _this.handleChange.bind(_assertThisInitialized(_this));
     _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
@@ -100,46 +99,35 @@ var Page = /*#__PURE__*/function (_Component) {
   }, {
     key: "handleChange",
     value: function handleChange(name, value) {
-      var _this2 = this;
-
-      var errors = this.validator.errors;
       this.setState({
         user: _objectSpread(_objectSpread({}, this.props.user), {}, _defineProperty({}, name, value))
-      });
-      errors.remove(name);
-      this.validator.validate(name, value).then(function () {
-        _this2.setState({
-          errors: errors
-        });
       });
     }
   }, {
     key: "handleSubmit",
     value: function handleSubmit(e) {
-      var _this3 = this;
-
       e.preventDefault();
       var user = this.state.user;
       var errors = this.validator.errors;
-      this.validator.validateAll(user).then(function (success) {
-        if (success) {
-          _this3.submit(user);
-        } else {
-          _this3.setState({
-            errors: errors
-          });
-        }
-      });
+      /*this.validator.validateAll(user)
+          .then((success) => {
+              if (success) {
+               } else {
+                  this.setState({ errors })
+              }
+          })*/
+
+      this.submit(user);
     }
   }, {
     key: "submit",
     value: function submit(user) {
-      var _this4 = this;
+      var _this2 = this;
 
       this.props.dispatch(Object(_service__WEBPACK_IMPORTED_MODULE_3__["userUpdateRequest"])(user))["catch"](function (_ref) {
         var error = _ref.error,
             statusCode = _ref.statusCode;
-        var errors = _this4.validator.errors;
+        var errors = _this2.validator.errors;
 
         if (statusCode === 422) {
           lodash__WEBPACK_IMPORTED_MODULE_2___default.a.forOwn(error, function (message, field) {
@@ -147,7 +135,7 @@ var Page = /*#__PURE__*/function (_Component) {
           });
         }
 
-        _this4.setState({
+        _this2.setState({
           errors: errors
         });
       });
@@ -201,14 +189,12 @@ __webpack_require__.r(__webpack_exports__);
 var displayName = 'UserFrom';
 var propTypes = {
   user: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.object.isRequired,
-  errors: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.object.isRequired,
   onChange: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.func.isRequired,
   onSubmit: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.func.isRequired
 };
 
 var Form = function Form(_ref) {
   var user = _ref.user,
-      errors = _ref.errors,
       _onChange = _ref.onChange,
       _onSubmit = _ref.onSubmit;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
@@ -226,15 +212,13 @@ var Form = function Form(_ref) {
     type: "text",
     id: "name",
     name: "name",
-    className: "form-control ".concat(errors.has('name') && 'is-invalid'),
+    className: "form-control",
     placeholder: "Full Name",
     value: user.name || '',
     onChange: function onChange(e) {
       return _onChange(e.target.name, e.target.value);
     }
-  }), errors.has('name') && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "invalid-feedback"
-  }, errors.first('name')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
     htmlFor: "email",
@@ -245,15 +229,13 @@ var Form = function Form(_ref) {
     type: "email",
     id: "email",
     name: "email",
-    className: "form-control ".concat(errors.has('email') && 'is-invalid'),
+    className: "form-control",
     placeholder: "Email",
     value: user.email || '',
     onChange: function onChange(e) {
       return _onChange(e.target.name, e.target.value);
     }
-  }), errors.has('email') && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "invalid-feedback"
-  }, errors.first('email')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
     htmlFor: "phone",
@@ -264,15 +246,13 @@ var Form = function Form(_ref) {
     type: "text",
     id: "phone",
     name: "phone",
-    className: "form-control ".concat(errors.has('phone') && 'is-invalid'),
+    className: "form-control",
     placeholder: "Phone",
     value: user.phone || '',
     onChange: function onChange(e) {
       return _onChange(e.target.name, e.target.value);
     }
-  }), errors.has('phone') && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "invalid-feedback"
-  }, errors.first('phone')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
     htmlFor: "about",
@@ -282,21 +262,18 @@ var Form = function Form(_ref) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
     id: "about",
     name: "about",
-    className: "form-control ".concat(errors.has('about') && 'is-invalid'),
+    className: "form-control",
     rows: "3",
     placeholder: "About",
     value: user.about || '',
     onChange: function onChange(e) {
       return _onChange(e.target.name, e.target.value);
     }
-  }), errors.has('about') && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "invalid-feedback"
-  }, errors.first('about')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-sm-10 ml-auto"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    disabled: errors.any(),
     type: "submit",
     className: "btn btn-primary"
   }, "Update"))));

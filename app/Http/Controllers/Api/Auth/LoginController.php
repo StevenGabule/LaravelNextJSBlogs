@@ -3,38 +3,25 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 class LoginController extends Controller
 {
-    public function login(Request $request)
+    public $successStatus = 200;
+
+    public function login()
     {
-        $input = $this->validate($request, [
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|min:6',
-        ], [
-            'email.exists' => 'The user credentials were incorrect.',
-        ]);
+        if (Auth::attempt(['email' => request('email'), 'password' => request('password')])) {
+            $user = Auth::user();
+            $token = $user->createToken(env('APP_NAME'))->accessToken;
+            return response()->json(['data' => ['access_token' => $token, 'user' => $user]], $this->successStatus);
 
-        request()->request->add([
-            'grant_type' => 'password',
-            'client_id' => env('PASSWORD_CLIENT_ID'),
-            'client_secret' => env('PASSWORD_CLIENT_SECRET'),
-            'username' => $input['email'],
-            'password' => $input['password'],
-        ]);
-
-        $response = Route::dispatch(Request::create('/oauth/token', 'POST'));
-
-        $data = json_decode($response->getContent(), true);
-
-        if (!$response->isOk()) {
-            return response()->json($data, 401);
+        } else {
+            return response(['error' => 'Unauthorized'], 401);
         }
-
-        return $data;
     }
 
     public function logout(Request $request)

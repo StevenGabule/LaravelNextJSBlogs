@@ -11,7 +11,7 @@ export function fetchUser() {
     return dispatch => {
         return Http.get('auth/me')
             .then(res => {
-                const data = Transformer.fetch(res.data)
+                const data = Transformer.fetch(res.data.data)
                 dispatch(authActions.authUser(data))
             })
             .catch(err => {
@@ -30,9 +30,10 @@ export function login(credentials) {
     return dispatch => (
         new Promise((resolve, reject) => {
             Http.post('auth/login', credentials)
-                .then(res => {
-                    const data = Transformer.fetch(res.data)
+                .then((res) => {
+                    const data = Transformer.fetch(res.data.data)
                     dispatch(authActions.authLogin(data.accessToken))
+                    dispatch(fetchUser())
                     return resolve()
                 })
                 .catch((err) => {
@@ -49,10 +50,13 @@ export function login(credentials) {
                             searchStr: '',
                             replaceStr: '',
                         };
+
                         data.error = Transformer.resetValidationFields(resetErrors);
+
                     } else if (statusCode === 401) {
                         data.error = err.response.data.message;
                     }
+
                     return reject(data);
                 })
         })

@@ -2,12 +2,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+
 // import components
 import { Collapse, Dropdown, DropdownItem, DropdownMenu, DropdownToggle } from 'reactstrap'
 import NavItem from './NavItem'
 
 // initiate Component
 export default function PrivateHeader({user, showNavigation, showDropdown, toggleDropdown, logout}) {
+
     return (
         <Collapse className="navbar-collapse" isOpen={ showNavigation }>
             <ul className="navbar-nav mr-auto">
@@ -21,7 +23,7 @@ export default function PrivateHeader({user, showNavigation, showDropdown, toggl
                         { user.name }
                     </DropdownToggle>
                     <DropdownMenu className="dropdown-menu-right">
-                        <Link className='dropdown-item' to={ `/users/${ user.id }/edit` }>
+                        <Link className='dropdown-item' to={ `/users/${user.id}/edit` }>
                             <span className="fa fa-user-o" title="logout" aria-hidden="true"/> Profile
                         </Link>
                         <DropdownItem divider/>

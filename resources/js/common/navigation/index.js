@@ -26,6 +26,10 @@ class Navigation extends Component {
         }
     }
 
+    componentDidMount() {
+        // console.log(this.props.user)
+    }
+
     toggleNavbar = () => {
         this.setState({
             showNavigation: !this.state.showNavigation,

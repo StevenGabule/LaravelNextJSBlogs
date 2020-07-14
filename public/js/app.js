@@ -108010,6 +108010,10 @@ var Navigation = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(Navigation, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {// console.log(this.props.user)
+    }
+  }, {
     key: "render",
     value: function render() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(reactstrap__WEBPACK_IMPORTED_MODULE_5__["Navbar"], {
@@ -108269,7 +108273,7 @@ __webpack_require__.r(__webpack_exports__);
 function fetchUser() {
   return function (dispatch) {
     return _utils_Https__WEBPACK_IMPORTED_MODULE_0__["default"].get('auth/me').then(function (res) {
-      var data = _utils_Transformer__WEBPACK_IMPORTED_MODULE_2__["default"].fetch(res.data);
+      var data = _utils_Transformer__WEBPACK_IMPORTED_MODULE_2__["default"].fetch(res.data.data);
       dispatch(_store_actions__WEBPACK_IMPORTED_MODULE_1__["authUser"](data));
     })["catch"](function (err) {
       console.log(err);
@@ -108287,8 +108291,9 @@ function login(credentials) {
   return function (dispatch) {
     return new Promise(function (resolve, reject) {
       _utils_Https__WEBPACK_IMPORTED_MODULE_0__["default"].post('auth/login', credentials).then(function (res) {
-        var data = _utils_Transformer__WEBPACK_IMPORTED_MODULE_2__["default"].fetch(res.data);
+        var data = _utils_Transformer__WEBPACK_IMPORTED_MODULE_2__["default"].fetch(res.data.data);
         dispatch(_store_actions__WEBPACK_IMPORTED_MODULE_1__["authLogin"](data.accessToken));
+        dispatch(fetchUser());
         return resolve();
       })["catch"](function (err) {
         var statusCode = err.response.status;
